@@ -1,0 +1,181 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+// schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Employee {
+  employee_id        Int       @id @default(autoincrement())
+  name               String
+  role               Role
+  salary_type        SalaryType
+  monthly_salary     Int?
+  base_hourly_wage   Int?
+  hire_date          DateTime
+  gender             Gender?
+  birth_date         DateTime?
+  password           String
+  is_admin           Boolean   @default(false)
+  created_at         DateTime  @default(now())
+
+  assignments        Assignment[]
+  attendanceLogs     AttendanceLog[]
+  workRecords        WorkRecord[]
+  shiftRequests      ShiftRequest[]
+  finalReports       FinalReport[] @relation("ReporterReports")
+}
+
+model Location {
+  location_id         Int       @id @default(autoincrement())
+  location_name       String
+  address             String?
+  max_assignees       Int
+  default_start_time  DateTime?
+  default_end_time    DateTime?
+
+  assignments         Assignment[]
+  assignmentRequests  AssignmentRequest[]
+  workRecords         WorkRecord[]
+  cardBenefits        CardBenefit[]
+  finalReports        FinalReport[]
+}
+
+model AssignmentRequest {
+  request_id               Int      @id @default(autoincrement())
+  location_id              Int
+  requested_date           DateTime
+  custom_requested_count   Int?
+  notes                    String?
+  created_at               DateTime @default(now())
+
+  location                 Location @relation(fields: [location_id], references: [location_id])
+}
+
+model Assignment {
+  assignment_id        Int      @id @default(autoincrement())
+  employee_id          Int
+  work_date            DateTime
+  location_id          Int
+  planned_start_time   DateTime?
+  planned_end_time     DateTime?
+
+  employee             Employee @relation(fields: [employee_id], references: [employee_id])
+  location             Location @relation(fields: [location_id], references: [location_id])
+}
+
+model AttendanceLog {
+  log_id       Int       @id @default(autoincrement())
+  employee_id  Int
+  log_type     LogType
+  timestamp    DateTime
+
+  employee     Employee  @relation(fields: [employee_id], references: [employee_id])
+}
+
+model WorkRecord {
+  work_id             Int       @id @default(autoincrement())
+  employee_id         Int
+  work_date           DateTime
+  clock_in_time       DateTime?
+  clock_out_time      DateTime?
+  working_hours       Float?
+  transportation_fee  Int       @default(0)
+  location_id         Int
+
+  employee            Employee  @relation(fields: [employee_id], references: [employee_id])
+  location            Location  @relation(fields: [location_id], references: [location_id])
+}
+
+model ShiftRequest {
+  request_id     Int       @id @default(autoincrement())
+  employee_id    Int
+  request_date   DateTime
+  preference     ShiftPreference
+  comment        String?
+  created_at     DateTime @default(now())
+
+  employee       Employee  @relation(fields: [employee_id], references: [employee_id])
+}
+
+model CardBenefit {
+  benefit_id         Int       @id @default(autoincrement())
+  location_id        Int
+  title              String
+  description        String
+  start_date         DateTime
+  end_date           DateTime?
+  is_limited_stock   Boolean   @default(false)
+  note               String?
+  created_at         DateTime  @default(now())
+
+  location           Location  @relation(fields: [location_id], references: [location_id])
+}
+
+model FinalReport {
+  report_id         Int       @id @default(autoincrement())
+  work_date         DateTime
+  location_id       Int
+  reporter_id       Int
+  total_receptions  Int
+  vc_count          Int
+  select_count      Int
+  note              String?
+  submitted_at      DateTime  @default(now())
+
+  reporter          Employee  @relation("ReporterReports", fields: [reporter_id], references: [employee_id])
+  location          Location  @relation(fields: [location_id], references: [location_id])
+}
+
+model PeakPeriodRule {
+  rule_id                  Int        @id @default(autoincrement())
+  title                    String
+  start_date               DateTime
+  end_date                 DateTime
+  min_days_required        Int
+  require_full_attendance  Boolean    @default(false)
+  target_role              Role       @default(バイト)
+  peak_hourly_wage         Int
+  applies_to_month         DateTime
+}
+
+enum Role {
+  社員
+  契約社員
+  バイト
+}
+
+enum SalaryType {
+  hourly
+  monthly
+}
+
+enum Gender {
+  男性
+  女性
+  その他
+}
+
+enum LogType {
+  出勤
+  退勤
+  前日確認
+  出発
+}
+
+enum ShiftPreference {
+  入れる
+  微妙
+  入れない
+}
+
