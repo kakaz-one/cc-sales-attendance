@@ -1,10 +1,10 @@
 import Link from 'next/link'
-import styles from './page.module.css'
+import styles from '../../../page.module.css'
 
 export default function Page() {
   return (
     <div className={styles.container}>
-      <h1>ユーザー種別選択</h1>
+      <h1>従業員ページ</h1>
       <div className={styles.buttonContainer}>
         <Link href="/auth/admin/login">
           <button className={styles.button}>
