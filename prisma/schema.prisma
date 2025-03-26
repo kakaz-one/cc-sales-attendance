@@ -41,8 +41,8 @@ model Location {
   location_name       String
   address             String?
   max_assignees       Int
-  default_start_time  DateTime?
-  default_end_time    DateTime?
+  default_start_time  String?   // 時刻（例: "10:00"）→ DBでは TIME 型にマッピング
+  default_end_time    String?   // 同上
 
   assignments         Assignment[]
   assignmentRequests  AssignmentRequest[]
