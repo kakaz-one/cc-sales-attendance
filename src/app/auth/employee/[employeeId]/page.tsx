@@ -1,21 +1,45 @@
+'use client';
 import Link from 'next/link'
-import styles from '../../../page.module.css'
+import { use, useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import styles from './styles.module.css'
 
-export default function Page() {
+export default function EmployeePage({ params }: { params: Promise<{ employeeId: string }> }) {
+
+  const router = useRouter();
+  const { employeeId } = use(params);
+  const [name, setName] = useState('');
+
+  useEffect(() => {
+    // 従業員情報を取得するためのAPI呼び出し
+    fetch(`/api/auth/employee/${employeeId}`)
+      .then(response => response.json())
+      .then(data => setName(data.name))
+      .catch(err => console.error('Error fetching employee data:', err));
+  }, [employeeId]);
+
   return (
     <div className={styles.container}>
-      <h1>従業員ページ</h1>
-      <div className={styles.buttonContainer}>
-        <Link href="/auth/admin/login">
-          <button className={styles.button}>
-            管理者
-          </button>
-        </Link>
-        <Link href="/auth/employee/login">
-          <button className={styles.button}>
-            従業員
-          </button>
-        </Link>
+      <div className={styles.content}>
+        <h2>従業員ページ</h2>
+        <p>従業員氏名: {name}</p>
+        <div className={styles.buttonContainer}>
+          <Link href={`/auth/employee/${employeeId}/assignments`}>
+            <button className={styles.button}>
+              案件一覧ページ
+            </button>
+          </Link>
+          <Link href={`/auth/employee/${employeeId}/shifts`}>
+            <button className={styles.button}>
+              シフト申請ページ
+            </button>
+          </Link>
+          <Link href={`/auth/employee/${employeeId}/performance`}>
+            <button className={styles.button}>
+              成績一覧ページ
+            </button>
+          </Link>
+        </div>
       </div>
     </div>
   )

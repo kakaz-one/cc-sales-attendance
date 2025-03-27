@@ -1,10 +1,10 @@
-//従業員ごとのその月の案件一覧ページ
+//各従業員の個人の成績を表示するページ
 'use client';
 import { use, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './styles.module.css'
 
-export default function EmployeeAssignmentsPage({ params }: { params: Promise<{ employeeId: string }> }) {
+export default function EmployeePerformancePage({ params }: { params: Promise<{ employeeId: string }> }) {
 
   const router = useRouter();
   const { employeeId } = use(params);
@@ -21,7 +21,7 @@ export default function EmployeeAssignmentsPage({ params }: { params: Promise<{ 
   return (
     <div className={styles.container}>
       <div className={styles.content}>
-        <h2>案件一覧ページ</h2>
+        <h2>成績一覧ページ</h2>
         <p>従業員氏名: {name}</p>
         <div>
         
