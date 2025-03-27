@@ -34,6 +34,7 @@ model Employee {
   workRecords        WorkRecord[]
   shiftRequests      ShiftRequest[]
   finalReports       FinalReport[] @relation("ReporterReports")
+  finalReportDetails FinalReportDetail[]
 }
 
 model Location {
@@ -95,6 +96,8 @@ model WorkRecord {
 
   employee            Employee  @relation(fields: [employee_id], references: [employee_id])
   location            Location  @relation(fields: [location_id], references: [location_id])
+
+  @@unique([employee_id, work_date, location_id], name: "employee_id_work_date_location_id")
 }
 
 model ShiftRequest {
@@ -123,18 +126,31 @@ model CardBenefit {
 }
 
 model FinalReport {
-  report_id         Int       @id @default(autoincrement())
-  work_date         DateTime
-  location_id       Int
-  reporter_id       Int
-  total_receptions  Int
-  vc_count          Int
-  select_count      Int
-  note              String?
-  submitted_at      DateTime  @default(now())
+  report_id           Int                  @id @default(autoincrement())
+  work_date           DateTime
+  location_id         Int
+  reporter_id         Int
+  receptions_sum      Int
+  vc_count_sum        Int
+  select_count_sum    Int
+  note                String?
+  submitted_at        DateTime             @default(now())
 
-  reporter          Employee  @relation("ReporterReports", fields: [reporter_id], references: [employee_id])
-  location          Location  @relation(fields: [location_id], references: [location_id])
+  reporter            Employee             @relation("ReporterReports", fields: [reporter_id], references: [employee_id])
+  location            Location             @relation(fields: [location_id], references: [location_id])
+  details             FinalReportDetail[]  @relation("ReportToDetails")
+}
+
+model FinalReportDetail {
+  detail_id       Int         @id @default(autoincrement())
+  report_id       Int
+  employee_id     Int
+  receptions      Int
+  vc_count        Int
+  select_count    Int
+
+  report          FinalReport @relation("ReportToDetails", fields: [report_id], references: [report_id], onDelete: Cascade)
+  employee        Employee    @relation(fields: [employee_id], references: [employee_id])
 }
 
 model PeakPeriodRule {
