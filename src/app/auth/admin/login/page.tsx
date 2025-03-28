@@ -26,7 +26,7 @@ export default function Page() {
       });
 
       const data = await response.json();
-      console.log('API Response:', data); // デバッグ用ログ
+      console.log('API Response:', data);
 
       if (!response.ok) {
         setError(data.message);
@@ -36,7 +36,7 @@ export default function Page() {
       // ログイン成功時の処理
       router.push(`/auth/admin/${data.adminId}`);
     } catch (err) {
-      console.error('Error during login:', err); // デバッグ用ログ
+      console.error('Error during login:', err);
       setError('ログイン処理中にエラーが発生しました');
     }
   };

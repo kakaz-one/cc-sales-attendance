@@ -35,12 +35,12 @@ export const GET = async (req: Request, res: NextResponse) => {
 export const POST = async (req: Request) => {
   try {
     await main();
-    const { employeeId, password } = await req.json();
-    console.log('ログインリクエスト:', { employeeId, password });
+    const { adminId, password } = await req.json();
+    console.log('ログインリクエスト:', { adminId, password });
 
     const employee = await prisma.employee.findUnique({
       where: {
-        employee_id: parseInt(employeeId)
+        employee_id: parseInt(adminId)
       }
     });
     console.log('従業員データ:', employee);
@@ -48,28 +48,34 @@ export const POST = async (req: Request) => {
     if (!employee) {
       console.log('従業員が見つかりません');
       return NextResponse.json(
-        { message: "従業員IDまたはパスワードが正しくありません" },
+        { message: "管理者IDまたはパスワードが正しくありません" },
         { status: 401 }
       );
     }
 
-    console.log('input:', password);
-    console.log('password:', employee.password);
-    const isValid = password == employee.password;
+    const isValid = password === employee.password;
     console.log('パスワード検証結果:', isValid);
 
     if (!isValid) {
       console.log('パスワードが一致しません');
       return NextResponse.json(
-        { message: "従業員IDまたはパスワードが正しくありません" },
+        { message: "管理者IDまたはパスワードが正しくありません" },
         { status: 401 }
+      );
+    }
+
+    if (!employee.is_admin) {
+      console.log('管理者権限がありません');
+      return NextResponse.json(
+        { message: "管理者権限がありません" },
+        { status: 403 }
       );
     }
 
     return NextResponse.json(
       { 
         message: "ログイン成功",
-        employeeId: employee.employee_id,
+        adminId: employee.employee_id,
         name: employee.name
       },
       { status: 200 }
