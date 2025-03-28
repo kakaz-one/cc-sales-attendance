@@ -1,11 +1,11 @@
+//従業員給与明細ページ
 'use client';
-import Link from 'next/link'
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { use } from 'react';
 import styles from './styles.module.css'
 
-export default function AdminPage({ params }: { params: Promise<{ adminId: string }> }) {
+export default function AdminEmployeesPage({ params }: { params: Promise<{ adminId: string }> }) {
   const router = useRouter();
   const [name, setName] = useState('');
   const [error, setError] = useState('');
@@ -32,34 +32,13 @@ export default function AdminPage({ params }: { params: Promise<{ adminId: strin
   return (
     <div className={styles.container}>
       <div className={styles.content}>
-        <h2>管理者ページ</h2>
+        <h2>従業員（バイト）給与明細ページ</h2>
         {error ? (
           <p className={styles.error}>{error}</p>
         ) : (
           <p>管理者氏名: {name}</p>
         )}
-        <div className={styles.buttonContainer}>
-          <Link href={`/auth/admin/${adminId}/assignments`}>
-            <button className={styles.button}>
-              アサイン状況確認ページ
-            </button>
-          </Link>
-          <Link href={`/auth/admin/${adminId}/performance`}>
-            <button className={styles.button}>
-              従業員成績一覧ページ
-            </button>
-          </Link>
-          <Link href={`/auth/admin/${adminId}/payroll/employee`}>
-            <button className={styles.button}>
-              従業員（バイト）給与明細ページ
-            </button>
-          </Link>
-          <Link href={`/auth/admin/${adminId}/employees`}>
-            <button className={styles.button}>
-              従業員一覧ページ
-            </button>
-          </Link>
-        </div>
+        
       </div>
     </div>
   );
