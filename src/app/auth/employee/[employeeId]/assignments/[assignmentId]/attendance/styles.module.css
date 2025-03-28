@@ -80,4 +80,101 @@
 
 .workRecord p {
   margin: 0.5rem 0;
+}
+
+.form {
+  margin-top: 2rem;
+}
+
+.formGroup {
+  margin-bottom: 1.5rem;
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+.select,
+.input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.success {
+  margin-top: 1rem;
+  padding: 0.5rem;
+  background-color: #e6ffe6;
+  color: #006600;
+  border-radius: 4px;
+}
+
+.error {
+  margin-top: 1rem;
+  padding: 0.5rem;
+  background-color: #ffe6e6;
+  color: #cc0000;
+  border-radius: 4px;
+}
+
+.logTypeContainer {
+  margin-bottom: 2rem;
+}
+
+.logTypeLabel {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.logTypeButtons {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.logTypeButton {
+  flex: 1;
+  min-width: 120px;
+  position: relative;
+  cursor: pointer;
+}
+
+.radioInput {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.radioLabel {
+  display: block;
+  padding: 0.8rem;
+  text-align: center;
+  background-color: #f5f5f5;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.radioInput:checked + .radioLabel {
+  background-color: #0070f3;
+  color: white;
+  border-color: #0070f3;
+}
+
+.radioInput:hover + .radioLabel {
+  border-color: #0070f3;
+}
+
+@media (max-width: 600px) {
+  .logTypeButtons {
+    flex-direction: column;
+  }
+  
+  .logTypeButton {
+    width: 100%;
+  }
 } 
