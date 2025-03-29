@@ -50,6 +50,7 @@ model Location {
   workRecords         WorkRecord[]
   cardBenefits        CardBenefit[]
   finalReports        FinalReport[]
+  attendanceLogs      AttendanceLog[]
 }
 
 model AssignmentRequest {
@@ -73,15 +74,22 @@ model Assignment {
 
   employee             Employee @relation(fields: [employee_id], references: [employee_id])
   location             Location @relation(fields: [location_id], references: [location_id])
+  attendanceLogs       AttendanceLog[]
 }
 
 model AttendanceLog {
-  log_id       Int       @id @default(autoincrement())
-  employee_id  Int
-  log_type     LogType
-  timestamp    DateTime
+  log_id         Int       @id @default(autoincrement())
+  assignment_id  Int       // 追加
+  employee_id    Int
+  log_type       LogType
+  timestamp      DateTime
+  location_id    Int       // 追加
 
-  employee     Employee  @relation(fields: [employee_id], references: [employee_id])
+  assignment     Assignment @relation(fields: [assignment_id], references: [assignment_id])
+  employee       Employee   @relation(fields: [employee_id], references: [employee_id])
+  location       Location   @relation(fields: [location_id], references: [location_id])
+
+  @@unique([assignment_id, log_type]) // 同じアサインメントに対して同じ種類の打刻は1つまで
 }
 
 model WorkRecord {
