@@ -78,3 +78,9 @@
   color: #666;
   font-size: 0.9em;
 }
+
+.finalReporter {
+  background-color: #fef9c3;
+  order: -1; /* 最終報告者を一番上に表示 */
+  font-weight: 500;
+}

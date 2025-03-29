@@ -8,6 +8,8 @@ import styles from './styles.module.css'
 type Assignment = {
   employee: {
     name: string;
+    role: '社員' | '契約社員' | 'バイト';
+    hire_date: string;
   };
   location: {
     location_name: string;
@@ -85,6 +87,24 @@ export default function AdminAssignmentsPage({ params }: { params: Promise<{ adm
     return `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
   };
 
+  const getFinalReporter = (assignments: Assignment[]) => {
+    if (assignments.length === 0) return null;
+    
+    // roleの優先順位を定義
+    const rolePriority = {
+      '社員': 1,
+      '契約社員': 2,
+      'バイト': 3,
+    };
+
+    // roleと入社日でソート
+    return assignments.sort((a, b) => {
+      const roleDiff = rolePriority[a.employee.role] - rolePriority[b.employee.role];
+      if (roleDiff !== 0) return roleDiff;
+      return new Date(a.employee.hire_date).getTime() - new Date(b.employee.hire_date).getTime();
+    })[0];
+  };
+
   const renderDateSection = (date: string, title: string) => (
     <div className={styles.dateSection}>
       <div className={styles.dateSectionHeader}>
@@ -94,13 +114,22 @@ export default function AdminAssignmentsPage({ params }: { params: Promise<{ adm
       <div className={styles.locationsGrid}>
         {locations.map((location) => {
           const locationAssignments = getAssignmentsForDateAndLocation(date, location.location_name);
+          const finalReporter = getFinalReporter(locationAssignments);
+          
           return (
             <div key={location.location_id} className={styles.locationCard}>
               <h4>{location.location_name}</h4>
               <div className={styles.employeeList}>
                 {locationAssignments.length > 0 ? (
                   locationAssignments.map((assignment, index) => (
-                    <div key={index} className={styles.employee}>
+                    <div 
+                      key={index} 
+                      className={`${styles.employee} ${
+                        assignment.employee.name === finalReporter?.employee.name 
+                          ? styles.finalReporter 
+                          : ''
+                      }`}
+                    >
                       {assignment.employee.name}
                     </div>
                   ))

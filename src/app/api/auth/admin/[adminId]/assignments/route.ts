@@ -36,7 +36,7 @@ export async function GET(
       },
     });
 
-    // 3日分のアサインメントを取得（日付の範囲を指定）
+    // 3日分のアサインメントを取得（従業員の詳細情報も含める）
     const assignments = await prisma.assignment.findMany({
       where: {
         work_date: {
@@ -48,6 +48,8 @@ export async function GET(
         employee: {
           select: {
             name: true,
+            role: true,
+            hire_date: true,
           },
         },
         location: {
@@ -56,6 +58,18 @@ export async function GET(
           },
         },
       },
+      orderBy: [
+        {
+          employee: {
+            role: 'asc', // 社員が先頭に来るように
+          },
+        },
+        {
+          employee: {
+            hire_date: 'asc', // 同じroleの場合は入社日が早い順
+          },
+        },
+      ],
     });
 
     return NextResponse.json({
