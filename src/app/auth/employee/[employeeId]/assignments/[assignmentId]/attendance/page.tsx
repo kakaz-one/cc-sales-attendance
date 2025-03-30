@@ -23,26 +23,26 @@ export default function AttendancePage({ params }: { params: Promise<{ employeeI
     try {
       const timestamp = new Date(`${selectedDate}T${selectedTime}`);
       
-      const response = await fetch('/api/attendance', {
+      const response = await fetch(`/api/auth/employee/${employeeId}/assignments/${assignmentId}/attendance`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          employeeId,
           logType: selectedLogType,
           timestamp: timestamp.toISOString(),
         }),
       });
 
       if (!response.ok) {
-        throw new Error('打刻の登録に失敗しました');
+        const errorData = await response.json();
+        throw new Error(errorData.message || '打刻の登録に失敗しました');
       }
 
       setMessage('打刻が完了しました');
     } catch (error) {
       console.error('Error:', error);
-      setMessage('打刻の登録に失敗しました');
+      setMessage(error instanceof Error ? error.message : '打刻の登録に失敗しました');
     }
   };
 

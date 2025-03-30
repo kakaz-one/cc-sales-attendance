@@ -3,13 +3,36 @@ import { NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
 
-export async function POST(req: Request) {
+export async function POST(
+  req: Request,
+  { params }: { params: { employeeId: string; assignmentId: string } }
+) {
   try {
-    const { employeeId, logType, timestamp } = await req.json();
+    const { logType, timestamp } = await req.json();
+    const { employeeId, assignmentId } = params;
+
+    // アサインメント情報を取得
+    const assignment = await prisma.assignment.findUnique({
+      where: {
+        assignment_id: parseInt(assignmentId),
+      },
+      include: {
+        location: true,
+      },
+    });
+
+    if (!assignment) {
+      return NextResponse.json(
+        { message: "アサインメントが見つかりません" },
+        { status: 404 }
+      );
+    }
 
     const attendanceLog = await prisma.attendanceLog.create({
       data: {
         employee_id: parseInt(employeeId),
+        assignment_id: parseInt(assignmentId),
+        location_id: assignment.location_id,
         log_type: logType as LogType,
         timestamp: new Date(timestamp),
       },
