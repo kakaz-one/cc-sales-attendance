@@ -10,9 +10,6 @@ export async function GET(
   try {
     const { adminId } = await params;
     
-    // DB接続の確認
-    await prisma.$connect();
-    
     // 日付の計算（時刻を00:00:00に設定）
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -91,8 +88,6 @@ export async function GET(
       { error: 'アサイン情報の取得に失敗しました' },
       { status: 500 }
     );
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
