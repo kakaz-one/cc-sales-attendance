@@ -1,12 +1,10 @@
 'use client';
 import Link from 'next/link'
 import { use, useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import styles from './styles.module.css'
 
 export default function EmployeePage({ params }: { params: Promise<{ employeeId: string }> }) {
 
-  const router = useRouter();
   const { employeeId } = use(params);
   const [name, setName] = useState('');
 

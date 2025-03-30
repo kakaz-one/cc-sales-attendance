@@ -1,7 +1,6 @@
 //従業員ごとのその月の案件一覧ページ
 'use client';
 import { use, useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import styles from './styles.module.css'
 import Link from 'next/link';
 interface Assignment {
@@ -13,7 +12,6 @@ interface Assignment {
 }
 
 export default function EmployeeAssignmentsPage({ params }: { params: Promise<{ employeeId: string }> }) {
-  const router = useRouter();
   const resolvedParams = use(params);
   const { employeeId } = resolvedParams;
   const [name, setName] = useState('');

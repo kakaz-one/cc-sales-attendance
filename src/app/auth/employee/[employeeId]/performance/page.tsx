@@ -1,12 +1,10 @@
 //各従業員の個人の成績を表示するページ
 'use client';
 import { use, useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import styles from './styles.module.css'
 
 export default function EmployeePerformancePage({ params }: { params: Promise<{ employeeId: string }> }) {
 
-  const router = useRouter();
   const { employeeId } = use(params);
   const [name, setName] = useState('');
 
