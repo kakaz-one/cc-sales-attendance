@@ -84,3 +84,32 @@
   order: -1; /* 最終報告者を一番上に表示 */
   font-weight: 500;
 }
+
+.employeeName {
+  font-size: 1em;
+  margin-bottom: 4px;
+}
+
+.attendanceStatus {
+  display: flex;
+  gap: 4px;
+  font-size: 0.8em;
+}
+
+.statusBox {
+  padding: 2px 6px;
+  border-radius: 4px;
+  min-width: 60px;
+  text-align: center;
+}
+
+.statusCompleted {
+  background-color: white;
+  border: 1px solid #ddd;
+}
+
+.statusPending {
+  background-color: #fee2e2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+}

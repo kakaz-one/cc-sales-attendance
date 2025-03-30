@@ -17,11 +17,12 @@ export async function GET(
 ) {
   try {
     await main();
-    const adminId = parseInt(params.adminId);
+    const { adminId } = await params;
+    const parsedAdminId = parseInt(adminId);
 
     const admin = await prisma.employee.findUnique({
       where: {
-        employee_id: adminId,
+        employee_id: parsedAdminId,
         is_admin: true
       },
       select: {

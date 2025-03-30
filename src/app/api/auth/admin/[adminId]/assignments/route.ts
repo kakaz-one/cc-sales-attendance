@@ -57,6 +57,12 @@ export async function GET(
             location_name: true,
           },
         },
+        attendanceLogs: {
+          select: {
+            log_type: true,
+            timestamp: true,
+          },
+        },
       },
       orderBy: [
         {

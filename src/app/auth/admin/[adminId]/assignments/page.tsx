@@ -15,6 +15,10 @@ type Assignment = {
     location_name: string;
   };
   work_date: string;
+  attendanceLogs: {
+    log_type: '前日確認' | '出発' | '出勤' | '退勤';
+    timestamp: string;
+  }[];
 };
 
 type Location = {
@@ -105,6 +109,29 @@ export default function AdminAssignmentsPage({ params }: { params: Promise<{ adm
     })[0];
   };
 
+  const getAttendanceStatus = (assignment: Assignment, logType: '前日確認' | '出発' | '出勤' | '退勤') => {
+    return assignment.attendanceLogs.some(log => log.log_type === logType);
+  };
+
+  const renderAttendanceStatus = (assignment: Assignment) => {
+    const logTypes: ('前日確認' | '出発' | '出勤' | '退勤')[] = ['前日確認', '出発', '出勤', '退勤'];
+    
+    return (
+      <div className={styles.attendanceStatus}>
+        {logTypes.map((type) => (
+          <div
+            key={type}
+            className={`${styles.statusBox} ${
+              getAttendanceStatus(assignment, type) ? styles.statusCompleted : styles.statusPending
+            }`}
+          >
+            {type}
+          </div>
+        ))}
+      </div>
+    );
+  };
+
   const renderDateSection = (date: string, title: string) => (
     <div className={styles.dateSection}>
       <div className={styles.dateSectionHeader}>
@@ -130,7 +157,8 @@ export default function AdminAssignmentsPage({ params }: { params: Promise<{ adm
                           : ''
                       }`}
                     >
-                      {assignment.employee.name}
+                      <div className={styles.employeeName}>{assignment.employee.name}</div>
+                      {renderAttendanceStatus(assignment)}
                     </div>
                   ))
                 ) : (
