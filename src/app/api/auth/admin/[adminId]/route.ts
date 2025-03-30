@@ -3,7 +3,8 @@ import { NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
 
-export async function main() {
+// mainをexportせずに内部関数として定義
+async function main() {
   try {
     await prisma.$connect();
   } catch {
