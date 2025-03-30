@@ -12,13 +12,14 @@ async function main() {
   }
 }
 
+// パラメータの型を修正
 export async function GET(
-  _req: Request,
-  { params }: { params: { adminId: string } }
+  req: Request,
+  context: { params: { adminId: string } }
 ) {
   try {
     await main();
-    const { adminId } = params;
+    const { adminId } = context.params;
     const parsedAdminId = parseInt(adminId);
 
     const admin = await prisma.employee.findUnique({
