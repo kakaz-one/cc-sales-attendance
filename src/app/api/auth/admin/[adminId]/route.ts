@@ -12,12 +12,12 @@ export async function main() {
 }
 
 export async function GET(
-  req: Request,
+  _req: Request,
   { params }: { params: { adminId: string } }
 ) {
   try {
     await main();
-    const { adminId } = await params;
+    const { adminId } = params;
     const parsedAdminId = parseInt(adminId);
 
     const admin = await prisma.employee.findUnique({
@@ -39,8 +39,8 @@ export async function GET(
     }
 
     return NextResponse.json(admin, { status: 200 });
-  } catch (err) {
-    console.error('Error:', err);
+  } catch (error) {
+    console.error('Error:', error);
     return NextResponse.json(
       { message: "管理者情報の取得に失敗しました" },
       { status: 500 }

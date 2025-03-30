@@ -27,6 +27,7 @@ type Location = {
 };
 
 export default function AdminAssignmentsPage({ params }: { params: Promise<{ adminId: string }> }) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const router = useRouter();
   const [name, setName] = useState('');
   const [error, setError] = useState('');

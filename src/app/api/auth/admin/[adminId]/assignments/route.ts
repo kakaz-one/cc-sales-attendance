@@ -3,21 +3,19 @@
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
 
-const prisma = new PrismaClient();
-
-export async function main() {
-  try {
-    await prisma.$connect();
-  } catch (err) {
-    return Error("DB接続に失敗しました");
-  }
-}
+// シングルトンパターンでPrismaClientのインスタンスを作成
+const globalForPrisma = global as unknown as { prisma: PrismaClient };
+export const prisma = globalForPrisma.prisma || new PrismaClient();
+if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 
 export async function GET(
-  request: Request,
-  { params }: { params: { adminId: string } }
+  _request: Request,
+  { params: { adminId } }: { params: { adminId: string } }
 ) {
   try {
+    // DB接続の確認
+    await prisma.$connect();
+    
     // 日付の計算（時刻を00:00:00に設定）
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -93,6 +91,8 @@ export async function GET(
       { error: 'アサイン情報の取得に失敗しました' },
       { status: 500 }
     );
+  } finally {
+    await prisma.$disconnect();
   }
 }
 
