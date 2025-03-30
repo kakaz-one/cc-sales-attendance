@@ -9,7 +9,9 @@ export async function POST(
 ) {
   try {
     const { logType, timestamp } = await req.json();
-    const { employeeId, assignmentId } = params;
+    // paramsを非同期で処理
+    const employeeId = await params.employeeId;
+    const assignmentId = await params.assignmentId;
 
     // アサインメント情報を取得
     const assignment = await prisma.assignment.findUnique({
@@ -55,7 +57,9 @@ export async function GET(
   { params }: { params: { employeeId: string; assignmentId: string } }
 ) {
   try {
-    const { employeeId, assignmentId } = params;
+    // paramsを非同期で処理
+    const employeeId = await params.employeeId;
+    const assignmentId = await params.assignmentId;
 
     const attendanceLogs = await prisma.attendanceLog.findMany({
       where: {
