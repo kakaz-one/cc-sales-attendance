@@ -7,13 +7,13 @@ const prisma = new PrismaClient();
 export async function main() {
   try {
     await prisma.$connect();
-  } catch (err) {
+  } catch (_err) {
     return Error("DB接続に失敗しました");
   }
 }
 
 // 従業員情報全件取得のAPI
-export const GET = async (req: Request, res: NextResponse) => {
+export const GET = async () => {
   try {
     await main();
     const employees = await prisma.employee.findMany();

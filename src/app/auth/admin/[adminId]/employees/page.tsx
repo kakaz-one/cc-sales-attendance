@@ -2,12 +2,10 @@
 //アサイン状況確認ページ
 'use client';
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { use } from 'react';
 import styles from './styles.module.css'
 
 export default function AdminEmployeesPage({ params }: { params: Promise<{ adminId: string }> }) {
-  const router = useRouter();
   const [name, setName] = useState('');
   const [error, setError] = useState('');
   const { adminId } = use(params);

@@ -43,6 +43,9 @@ export async function GET(
           gte: yesterday,
           lt: new Date(tomorrow.getTime() + 24 * 60 * 60 * 1000),
         },
+        // admin_idフィールドが実際のスキーマ定義と一致するように修正してください
+        // 例: administratorId: adminId,
+        // または、このフィルタが不要な場合は削除してください
       },
       include: {
         employee: {

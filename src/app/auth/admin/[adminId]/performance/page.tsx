@@ -1,7 +1,6 @@
 //従業員成績一覧ページ
 'use client';
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { use } from 'react';
 import styles from './styles.module.css'
 

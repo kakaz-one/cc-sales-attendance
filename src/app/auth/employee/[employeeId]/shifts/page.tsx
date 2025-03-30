@@ -1,12 +1,10 @@
 //従業員のシフト申請ページ
 'use client';
 import { use, useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import styles from './styles.module.css'
 
 export default function EmployeeShiftsPage({ params }: { params: Promise<{ employeeId: string }> }) {
 
-  const router = useRouter();
   const { employeeId } = use(params);
   const [name, setName] = useState('');
 
