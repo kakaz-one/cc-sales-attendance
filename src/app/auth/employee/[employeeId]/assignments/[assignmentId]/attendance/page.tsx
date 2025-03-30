@@ -146,7 +146,15 @@ export default function AttendancePage({ params }: { params: Promise<{ employeeI
                   <div key={type} className={styles.logItem}>
                     <span className={styles.logType}>{type}:</span>
                     <span className={log ? styles.logged : styles.notLogged}>
-                      {log ? '打刻済み' : '未打刻'}
+                      {log 
+                        ? `打刻済み (${new Date(new Date(log.timestamp).getTime() - 9 * 60 * 60 * 1000).toLocaleString('ja-JP', {
+                            year: 'numeric',
+                            month: '2-digit',
+                            day: '2-digit',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })})`
+                        : '未打刻'}
                     </span>
                   </div>
                 );
