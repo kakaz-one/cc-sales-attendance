@@ -1,29 +1,20 @@
-//管理者ページログインAPI
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
 
-export async function main() {
-  try {
-    await prisma.$connect();
-  } catch (_err) {
-    return Error("DB接続に失敗しました");
-  }
-}
-
 // 従業員情報全件取得のAPI
 export const GET = async () => {
   try {
-    await main();
+    await prisma.$connect();
     const employees = await prisma.employee.findMany();
     return NextResponse.json(
-      { message: "Success", employees }, 
+      { message: "Success", employees },
       { status: 200 }
     );
   } catch (err) {
     return NextResponse.json(
-      { message: "Failed", err }, 
+      { message: "Failed", err },
       { status: 500 }
     );
   } finally {
@@ -34,7 +25,7 @@ export const GET = async () => {
 // 従業員ログインのAPI
 export const POST = async (req: Request) => {
   try {
-    await main();
+    await prisma.$connect();
     const { adminId, password } = await req.json();
     console.log('ログインリクエスト:', { adminId, password });
 
@@ -73,7 +64,7 @@ export const POST = async (req: Request) => {
     }
 
     return NextResponse.json(
-      { 
+      {
         message: "ログイン成功",
         adminId: employee.employee_id,
         name: employee.name
@@ -89,4 +80,4 @@ export const POST = async (req: Request) => {
   } finally {
     await prisma.$disconnect();
   }
-}; 
+};

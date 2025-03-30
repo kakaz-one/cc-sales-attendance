@@ -3,24 +3,25 @@ import { NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
 
-// mainをexportせずに内部関数として定義
-async function main() {
-  try {
-    await prisma.$connect();
-  } catch {
-    return Error("DB接続に失敗しました");
-  }
-}
+// main関数を削除し、DB接続を直接行う
+// 型定義を修正
+type Context = {
+  params: Promise<{
+    adminId: string;
+  }>;
+};
 
 // パラメータの型を修正
 export async function GET(
-  req: Request,
-  context: { params: { adminId: string } }
+  request: Request,
+  context: Context
 ) {
   try {
-    await main();
-    const { adminId } = context.params;
+    // paramsをawaitで取得
+    const { adminId } = await context.params;
     const parsedAdminId = parseInt(adminId);
+
+    await prisma.$connect();
 
     const admin = await prisma.employee.findUnique({
       where: {
