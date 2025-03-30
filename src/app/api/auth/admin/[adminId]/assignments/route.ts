@@ -1,19 +1,14 @@
 //アサイン状況確認API
 
-import { PrismaClient } from "@prisma/client";
+import { prisma } from '@/lib/prisma'
 import { NextResponse } from "next/server";
-
-// シングルトンパターンでPrismaClientのインスタンスを作成
-const globalForPrisma = global as unknown as { prisma: PrismaClient };
-export const prisma = globalForPrisma.prisma || new PrismaClient();
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 
 export async function GET(
   _request: Request,
-  { params }: { params: { adminId: string } }
+  { params }: { params: Promise<{ adminId: string }> }
 ) {
   try {
-    const { adminId } = params;
+    const { adminId } = await params;
     
     // DB接続の確認
     await prisma.$connect();
