@@ -48,4 +48,33 @@ export async function POST(
   } finally {
     await prisma.$disconnect();
   }
+}
+
+export async function GET(
+  req: Request,
+  { params }: { params: { employeeId: string; assignmentId: string } }
+) {
+  try {
+    const { employeeId, assignmentId } = params;
+
+    const attendanceLogs = await prisma.attendanceLog.findMany({
+      where: {
+        employee_id: parseInt(employeeId),
+        assignment_id: parseInt(assignmentId),
+      },
+      orderBy: {
+        timestamp: 'asc',
+      },
+    });
+
+    return NextResponse.json(attendanceLogs);
+  } catch (error) {
+    console.error('Error fetching attendance logs:', error);
+    return NextResponse.json(
+      { message: "打刻履歴の取得に失敗しました" },
+      { status: 500 }
+    );
+  } finally {
+    await prisma.$disconnect();
+  }
 } 

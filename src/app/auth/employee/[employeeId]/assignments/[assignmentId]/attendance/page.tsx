@@ -1,8 +1,14 @@
 'use client';
-import { use, useState } from 'react';
+import { use, useState, useEffect } from 'react';
 import styles from './styles.module.css';
 
 type LogType = '前日確認' | '出発' | '出勤' | '退勤';
+
+interface AttendanceLog {
+  log_id: number;
+  log_type: LogType;
+  timestamp: string;
+}
 
 export default function AttendancePage({ params }: { params: Promise<{ employeeId: string; assignmentId: string }> }) {
   const resolvedParams = use(params);
@@ -15,6 +21,27 @@ export default function AttendancePage({ params }: { params: Promise<{ employeeI
     new Date().toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' })
   );
   const [message, setMessage] = useState<string>('');
+  const [attendanceLogs, setAttendanceLogs] = useState<AttendanceLog[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchAttendanceLogs = async () => {
+      try {
+        const response = await fetch(`/api/auth/employee/${employeeId}/assignments/${assignmentId}/attendance`);
+        if (!response.ok) {
+          throw new Error('打刻履歴の取得に失敗しました');
+        }
+        const data = await response.json();
+        setAttendanceLogs(data);
+      } catch (error) {
+        console.error('Error fetching attendance logs:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchAttendanceLogs();
+  }, [employeeId, assignmentId]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,6 +66,8 @@ export default function AttendancePage({ params }: { params: Promise<{ employeeI
         throw new Error(errorData.message || '打刻の登録に失敗しました');
       }
 
+      const newLog = await response.json();
+      setAttendanceLogs([...attendanceLogs, newLog]);
       setMessage('打刻が完了しました');
     } catch (error) {
       console.error('Error:', error);
@@ -46,10 +75,12 @@ export default function AttendancePage({ params }: { params: Promise<{ employeeI
     }
   };
 
+  const logTypes: LogType[] = ['前日確認', '出発', '出勤', '退勤'];
+
   return (
     <div className={styles.container}>
       <div className={styles.content}>
-        <h2>打刻ページ</h2>
+        <h2>打刻ページ（打刻はそれぞれ一回までしかできません）</h2>
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.logTypeContainer}>
             <div className={styles.logTypeLabel}>打刻種別:</div>
@@ -102,6 +133,27 @@ export default function AttendancePage({ params }: { params: Promise<{ employeeI
             {message}
           </p>
         )}
+
+        <div className={styles.attendanceHistory}>
+          <h3>打刻履歴</h3>
+          {isLoading ? (
+            <p>読み込み中...</p>
+          ) : (
+            <div className={styles.logList}>
+              {logTypes.map((type) => {
+                const log = attendanceLogs.find((l) => l.log_type === type);
+                return (
+                  <div key={type} className={styles.logItem}>
+                    <span className={styles.logType}>{type}:</span>
+                    <span className={log ? styles.logged : styles.notLogged}>
+                      {log ? '打刻済み' : '未打刻'}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
