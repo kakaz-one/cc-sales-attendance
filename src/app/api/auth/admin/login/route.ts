@@ -1,7 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 // 従業員情報全件取得のAPI
 export const GET = async () => {
