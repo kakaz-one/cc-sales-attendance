@@ -1,7 +1,6 @@
 //従業員ページログインAPI
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
-import bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
 
