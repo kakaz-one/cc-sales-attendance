@@ -48,7 +48,12 @@ export default function EmployeeAssignmentsPage({ params }: { params: Promise<{ 
 
   const formatTime = (dateString: string | null) => {
     if (!dateString) return '未設定';
-    return new Date(dateString).toLocaleTimeString('ja-JP', {
+    
+    const date = new Date(dateString);
+    // UTCに変換（9時間減算）
+    const utcDate = new Date(date.getTime() - 9 * 60 * 60 * 1000);
+    
+    return utcDate.toLocaleTimeString('ja-JP', {
       hour: '2-digit',
       minute: '2-digit',
     });
