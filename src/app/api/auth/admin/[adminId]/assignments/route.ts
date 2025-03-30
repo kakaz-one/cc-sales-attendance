@@ -10,9 +10,11 @@ if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 
 export async function GET(
   _request: Request,
-  { params: { adminId } }: { params: { adminId: string } }
+  { params }: { params: { adminId: string } }
 ) {
   try {
+    const { adminId } = params;
+    
     // DB接続の確認
     await prisma.$connect();
     
